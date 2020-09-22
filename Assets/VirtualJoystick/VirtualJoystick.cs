@@ -1,30 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
-    public Transform knob;
+    public RectTransform knob;
     public Vector2 axis;
-
     private Vector2 joystickSize;
 
     //--------------------------------------------------
     void Start()
     {
-        joystickSize = GetComponent<RectTransform>().rect.max;
+        joystickSize = GetComponent<RectTransform>().rect.size;
     }
 
     //--------------------------------------------------
     private void MoveKnob(Vector2 pos)
     {
         knob.position = pos;
-        pos.x = Mathf.Clamp(knob.localPosition.x, 0, joystickSize.x);
-        pos.y = Mathf.Clamp(knob.localPosition.y, 0, joystickSize.y);
-        knob.localPosition = pos;
-
-        axis = ((knob.localPosition / joystickSize) * 2) - Vector2.one;
+        pos.x = Mathf.Clamp(knob.anchoredPosition.x, -joystickSize.x/2, joystickSize.x/2);
+        pos.y = Mathf.Clamp(knob.anchoredPosition.y, -joystickSize.y/2, joystickSize.y/2);
+        knob.anchoredPosition = pos;
+        axis = ((knob.anchoredPosition / joystickSize) * 2);
     }
 
     //--------------------------------------------------
@@ -41,6 +40,6 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public void OnPointerUp(PointerEventData eventData)
     {
         axis = Vector2.zero;
-        knob.localPosition = joystickSize/2;
+        knob.anchoredPosition = Vector2.zero;
     }
 }
